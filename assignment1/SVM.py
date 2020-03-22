@@ -64,10 +64,10 @@ def process_data(x, label):  # classify label into 1, others into -1
     return tmp.reshape(x.shape)
 
 def test_cancer_data():
-    X_test = pd.read_csv("dataset_files/cancer_X_test.csv").values[1:]
-    X_train = pd.read_csv("dataset_files/cancer_X_train.csv").values[1:]
-    y_test = pd.read_csv("dataset_files/cancer_y_test.csv").values[1:].ravel()
-    y_train = pd.read_csv("dataset_files/cancer_y_train.csv").values[1:].ravel()
+    X_test = pd.read_csv("dataset_files/cancer_X_test.csv").values
+    X_train = pd.read_csv("dataset_files/cancer_X_train.csv").values
+    y_test = pd.read_csv("dataset_files/cancer_y_test.csv").values.ravel()
+    y_train = pd.read_csv("dataset_files/cancer_y_train.csv").values.ravel()
     y_test = process_data(y_test, 0)
     y_train = process_data(y_train, 0)
 
@@ -80,10 +80,10 @@ def test_cancer_data():
     print(f"Predicted {res}/{len(y_test)} correctly, accuracy = {res/len(y_test) * 100}%")
 
 def test_iris_data():
-    X_test = pd.read_csv("dataset_files/iris_X_test.csv").values[1:]
-    X_train = pd.read_csv("dataset_files/iris_X_train.csv").values[1:]
-    y_test = pd.read_csv("dataset_files/iris_y_test.csv").values[1:].ravel()
-    y_train = pd.read_csv("dataset_files/iris_y_train.csv").values[1:].ravel()
+    X_test = pd.read_csv("dataset_files/iris_X_test.csv").values
+    X_train = pd.read_csv("dataset_files/iris_X_train.csv").values
+    y_test = pd.read_csv("dataset_files/iris_y_test.csv").values.ravel()
+    y_train = pd.read_csv("dataset_files/iris_y_train.csv").values.ravel()
 
     y_train_0 = process_data(y_train, 0)
     svm_0 = SVM()
