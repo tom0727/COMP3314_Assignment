@@ -17,13 +17,10 @@ class SVM:
             for j in range(n):
                 self.K[i,j] = X[i].dot(X[j])  # K is the kernel matrix, the value is used later on
 
-
         P = matrix(self.K * np.outer(y,y))
         q = matrix(np.ones(n) * -1.0)  # q = [-1,-1,-1,...]
 
-        # negI, I = np.identity(n) * -1.0, np.identity(n)
-        negI = np.diag(np.ones(n) * -1)
-        I = np.identity(n)
+        negI, I = np.identity(n) * -1.0, np.identity(n)
 
         G = matrix(np.vstack((negI,I)))  # G = [-I,I]^T
         h = matrix(np.hstack((np.zeros(n), np.ones(n) * self.C)))  # h = [0,0,...0, C,C,..C]
@@ -61,6 +58,11 @@ class SVM:
         predicted = np.dot(X, self.w) + self.b
         return predicted
 
+def process_data(x, label):  # classify label into 1, others into -1
+    tmp = np.ravel(x)
+    tmp = np.array([-1 if i != label else 1 for i in tmp])
+    return tmp.reshape(x.shape)
+
 def test_cancer_data():
     X_test = pd.read_csv("dataset_files/cancer_X_test.csv").values[1:]
     X_train = pd.read_csv("dataset_files/cancer_X_train.csv").values[1:]
@@ -76,11 +78,6 @@ def test_cancer_data():
     res = np.sum(y == y_test)
 
     print(f"Predicted {res}/{len(y_test)} correctly, accuracy = {res/len(y_test) * 100}%")
-
-def process_data(x, label):  # classify label into 1, others into -1
-    tmp = np.ravel(x)
-    tmp = np.array([-1 if i != label else 1 for i in tmp])
-    return tmp.reshape(x.shape)
 
 def test_iris_data():
     X_test = pd.read_csv("dataset_files/iris_X_test.csv").values[1:]
@@ -112,5 +109,3 @@ def test_iris_data():
 
 test_cancer_data()
 test_iris_data()
-
-
