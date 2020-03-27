@@ -2,6 +2,7 @@ import numpy as np
 from cvxopt import matrix,solvers
 import matplotlib.pyplot as plt
 import pandas as pd
+plt.style.use('ggplot')
 
 class SVM:
     def __init__(self, C = 1.0):
@@ -63,7 +64,7 @@ def process_data(x, label):  # classify label into 1, others into -1
     tmp = np.array([-1 if i != label else 1 for i in tmp])
     return tmp.reshape(x.shape)
 
-def test_cancer_data():
+def cancer_data(C):
     X_test = pd.read_csv("dataset_files/cancer_X_test.csv").values
     X_train = pd.read_csv("dataset_files/cancer_X_train.csv").values
     y_test = pd.read_csv("dataset_files/cancer_y_test.csv").values.ravel()
@@ -71,32 +72,33 @@ def test_cancer_data():
     y_test = process_data(y_test, 0)
     y_train = process_data(y_train, 0)
 
-    svm = SVM()
+    svm = SVM(C)
     svm.fit(X_train, y_train)
     y = svm.predict(X_test)  # prediction result
     y = np.sign(y)  # binary classification
     res = np.sum(y == y_test)
 
     print(f"Predicted {res}/{len(y_test)} correctly, accuracy = {res/len(y_test) * 100}%")
+    return res / len(y_test) * 100
 
-def test_iris_data():
+def iris_data(C):
     X_test = pd.read_csv("dataset_files/iris_X_test.csv").values
     X_train = pd.read_csv("dataset_files/iris_X_train.csv").values
     y_test = pd.read_csv("dataset_files/iris_y_test.csv").values.ravel()
     y_train = pd.read_csv("dataset_files/iris_y_train.csv").values.ravel()
 
     y_train_0 = process_data(y_train, 0)
-    svm_0 = SVM()
+    svm_0 = SVM(C)
     svm_0.fit(X_train, y_train_0)
     y_0 = svm_0.predict(X_test)
 
     y_train_1 = process_data(y_train, 1)
-    svm_1 = SVM()
+    svm_1 = SVM(C)
     svm_1.fit(X_train, y_train_1)
     y_1 = svm_1.predict(X_test)
 
     y_train_2 = process_data(y_train, 2)
-    svm_2 = SVM()
+    svm_2 = SVM(C)
     svm_2.fit(X_train, y_train_2)
     y_2 = svm_2.predict(X_test)
 
@@ -106,6 +108,27 @@ def test_iris_data():
     # Find the class with the highest score, assign to that class
 
     print(f"Predicted {res}/{len(y_test)} correctly, accuracy = {res/len(y_test) * 100}%")
+    return res/len(y_test) * 100
 
-test_cancer_data()
-test_iris_data()
+def plot_result():
+    c_values = []
+    for i in [0.001,0.01,0.1,1.0,10]:
+        for j in range(1,10):
+            c_values.append(i*j)
+
+    carcer_accuracy = [cancer_data(c) for c in c_values]
+    iris_accuracy = [iris_data(c) for c in c_values]
+
+    fig = plt.figure()
+    ax1 = plt.subplot2grid((1,1),(0,0))
+    ax1.plot(c_values,carcer_accuracy,label='breast cancer')
+    ax1.plot(c_values,iris_accuracy, label='iris')
+    ax1.set_xscale('log')
+    plt.legend()
+    plt.xlabel('Slack variable values')
+    plt.ylabel('Accuracy (in %)')
+    plt.title('Accuracy of two classification under different slack variables')
+    plt.subplots_adjust(left=0.09,bottom=0.16,right=0.94,top=0.9,wspace=0.2,hspace=0)
+    plt.show()
+
+plot_result()
