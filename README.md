@@ -14,5 +14,5 @@ Method2: Through IDE <br>
 Open an IDE and import project if necessary, if you are using Pycharm, open SVM.py and just run the code is sufficient.
 
 It will first train the model for breast cancer dataset and test it with different values of C afterwards. Then, it repeats again for iris data set.  
-We adjust the calue of slack variable to see how the accuracy will change accordingly. A visual of accuracy of two datasets agianst values of C is plotted.  
+We adjust the value of slack variable to see how the accuracy will change accordingly. A visual of accuracy of two datasets agianst values of C is plotted.  
 The results and analysis are written in the report.
