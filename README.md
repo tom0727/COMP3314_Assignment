@@ -6,5 +6,5 @@ In this assignment, we implement SVM algorithm to classify the given datasets, i
 ***
 #### How to run code
 Simply running the code is fine. It will first train the model for breast cancer dataset and test it afterward. Then, it repeat again for iris data set. Both above training is based on slack variable C = 1.0  
-At last, we adjust the calue of slack variable to see how the accuracy will change accordingly.  
+At last, we adjust the calue of slack variable to see how the accuracy will change accordingly. A visual of accuracy of two datasets agianst values of C is plotted.  
 The results and analysis are written in the report.
