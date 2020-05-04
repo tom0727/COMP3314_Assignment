@@ -1,0 +1,12 @@
+DATA:
+  test_image_path: dataset/MNIST/t10k-images-idx3-ubyte
+  test_label_path: dataset/MNIST/t10k-labels-idx1-ubyte
+  train_image_path: dataset/MNIST/train-images-idx3-ubyte
+  train_label_path: dataset/MNIST/train-labels-idx1-ubyte
+
+TRAIN:
+  epoch: 20
+  batch_size: 256
+
+TEST:
+  model_path: model/model_data_19.pkl
