@@ -16,21 +16,14 @@ class LossLayer:
         self.X_softmax = X_exp / (np.sum(X_exp, axis = 1).reshape((n_sample,1)))
 
         prob = self.X_softmax[np.arange(n_sample), self.label]  # prob.shape = (n_sample, )
-        # print(prob)
+        log_prob = np.log(prob + 1e-10)  # avoid 0.
 
-        log_prob = np.log(prob + 1e-10)
-
-        print(f"np.min(log_prob) = {np.min(log_prob)}, corresponding value = {prob.ravel()[np.argmin(log_prob)]}")
-        loss = -np.sum(np.log(prob))
+        loss = -np.sum(log_prob)
         return loss
 
     def backward_prop(self):
         n_sample, n_label = self.X_softmax.shape
-
         label_mat = np.zeros((n_sample, n_label))
         label_mat[np.arange(n_sample), self.label] -= 1
-
-        # for i in range(n_sample):
-        #     label_mat[i, self.label[i]] = -1
         return label_mat + self.X_softmax
 

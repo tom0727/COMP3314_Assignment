@@ -125,13 +125,33 @@ def train(model, train_data, test_data, num_epoch, lr_global_list, batch_size):
         cost = 0
         mini_batches = random_mini_batches(train_data[0], train_data[1], batch_size)
         print('Training: ')
-        for i in tqdm(range(len(mini_batches))):
-            batch_image, batch_label = mini_batches[i]
-            # For your implementation
-            loss = model.Forward_Propagation(batch_image, batch_label, 'train')
-            cost += loss
-            # For your implementation
-            model.Back_Propagation(lr_global)
+
+        isConverge = False
+
+        # reinitialize the weights if the model does not converge within 60 iterations
+        while not isConverge:
+            isConverge = True
+            count = 0
+            for i in tqdm(range(len(mini_batches))):
+                batch_image, batch_label = mini_batches[i]
+                # For your implementation
+                loss = model.Forward_Propagation(batch_image, batch_label, 'train')
+                cost += loss
+                # For your implementation
+                model.Back_Propagation(lr_global)
+                if loss < 500:
+                    count = 0
+                if loss > 550:
+                    count += 1
+                if count > 60 and epoch == 0:
+                    ste = time.time()
+                    cost = 0
+                    isConverge = False
+                    model.reinitialize()
+                    break
+            else:
+                isConverge = True
+
 
         print("Done, total cost of epoch {}: {}".format(epoch + 1, cost))
         # For your implementation
@@ -141,7 +161,7 @@ def train(model, train_data, test_data, num_epoch, lr_global_list, batch_size):
         print("0/1 error of testing set: ", error01_test, "/", len(test_data[1]))
         print("Time used: ", time.time() - ste, "sec")
         print("---------- epoch", epoch + 1, "end ------------")
-        with open('model/model_data_' + str(epoch) + '.pkl', 'wb') as output:
+        with open('model_data_' + str(epoch) + '.pkl', 'wb') as output:
             pickle.dump(model, output, pickle.HIGHEST_PROTOCOL)
 
     err_rate_list = np.array(err_rate_list).T
@@ -172,17 +192,13 @@ def main():
     """
 
     model = LeNet5()
-    mybatch = 60000
     train_data = train_data[0].reshape(60000,1,32,32), train_data[1]
     test_data = test_data[0].reshape(10000,1,32,32), test_data[1]
-    # print(train_data[0].shape, train_data[1].shape)
 
     # set lr for each epoch
     lr_global_list = np.array([5e-2] * 2 + [2e-2] * 3 + [1e-2] * 3 + [5e-3] * 4 + [1e-3] * 8)
-    lr_global_list *= 0.015
+    lr_global_list *= 0.008
     # train model
-    # args.epoch =
-    # args.batch_size = 50
     err_rate_list = train(model, train_data, test_data, args.epoch, lr_global_list, args.batch_size)
 
     # This shows the error rate of training and testing data after each epoch
